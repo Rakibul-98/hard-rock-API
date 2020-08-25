@@ -52,7 +52,9 @@
             </div>
             <!-- === Fancy results === -->
             
-            <div id="result-body"></div>
+            <div id="result-body">
+            
+            </div>
 
             <!-- Song Lyrics -->
             <div class="single-lyrics text-center">
@@ -72,11 +74,14 @@
 
     <!-- Custom Script Here -->
 <script>
+
+    // song list function
        function getSongInfo(songName){
                     fetch(`https://api.lyrics.ovh/suggest/${songName}`)
                     .then(res => res.json())
                     .then(data => {
                         const searchResult = document.getElementById('result-body');
+                        searchResult.innerHTML="";
                             for (let i = 0; i < 10; i++) {
                             const songs = data.data[i];
 
@@ -90,33 +95,29 @@
                                                     <p id="artist-name" class="author lead">Album by <span>${songs.artist.name}</span></p>
                                                 </div>
                                                 <div class="col-md-3 text-md-right text-center">
-                                                 <button onclick="getLyricsData("${songs.artist.name}","${songs.title}")" 
-                                                 class="btn btn-success">Get Lyrics</button>
+                                                    <button onclick="getLyricsData('${artist}','${title}')" 
+                                                    class="btn btn-success">Get Lyrics</button>
                                                 </div>
                                            </div>`;
                         searchResult.appendChild(h1);
-                        
-                        function getLyricsData (artist,title){
-                                  fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
-                                  .then(res => res.json())
-                                  .then(data =>{
-                                    console.log(1234)
-                                  })
-                        }
-
-                        console.log(songs.artist.name)
-                        console.log(songs.title)
-           }
-       })
-       
-       }
+                                        }
+                                    });
+                                }
+// search button event listner
        const searchButton = document.getElementById('search-button');
        searchButton.addEventListener('click', () =>{
            const searchValue = document.getElementById('input-song').value;
            getSongInfo(searchValue);
         })
-
-        
+// lyrics function
+        function getLyricsData(artist,title){
+            fetch(`https://api.lyrics.ovh/v1/${artist}/${title}`)
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById("lyric-name").innerHTML=title;
+                document.getElementById("show-lyrics").innerHTML=data.lyrics;
+            })
+        }
 </script>
 </body>
 
